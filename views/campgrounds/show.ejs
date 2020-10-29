@@ -1,0 +1,66 @@
+<%-include('../partials/header')%>
+<div class='container'>
+	<div class='row'>
+		<div class='col-md-3'>
+			<p  class='lead'>YelpCamp</p>
+			<div class='list-group'>
+				<li class='list-group-item'>item 1</li>
+				<li class='list-group-item'>item 2</li>
+				<li class='list-group-item'>item 3</li>
+			</div>
+		</div>
+		<div class='col-md-9'>
+			<div class='img-thumbnail p-0 mt-2'>
+				<img class="img-fluid" alt="Responsive image" 
+					 src='<%=campground.image%>'>
+				<div class='p-2 caption-full'>
+					<div class='mt-2 d-flex justify-content-between'>
+						<h4 class=''><a><%=campground.name %></a></h4>
+						<h4 class=''>$<%=campground.price%>/night</h4>
+					</div>
+					<p><%=campground.description %></p>
+					<p>
+  						<em>Submitted by: <%= campground.author.username %>, 
+							<%=moment(campground.createdAt).fromNow() %></em>
+					</p>
+					<%if(currentUser && campground.author.id.equals(currentUser._id)){%>
+						<a class='btn btn-warning' 
+					  	 href='/campgrounds/<%=campground._id%>/edit'>Edit</a>
+						<form class='d-inline' method='post' 
+						 	 action='/campgrounds/<%= campground._id %>?_method=delete'>
+							<button class='btn btn-danger'>Delete</button>
+						</form>
+					<%}%>
+				</div>
+			</div>
+			<div class='card'>
+				<div class='d-flex flex-column card-body'>
+					<a href='/campgrounds/<%=campground._id%>/comments/new' 
+					   class='mb-2 btn btn-success align-self-end px-4'>
+					   Leave a Review
+					</a>
+					<hr>
+					<% campground.comments.forEach(function(comment){%>
+					<div class='d-flex'>
+						<p class='card-text mr-auto'>
+						<strong><%=comment.author.username%></strong> - <%= comment.text%>
+						</p>
+						<%if(currentUser && comment.author.id.equals(currentUser._id)){%>
+						<a 
+					href='/campgrounds/<%=campground._id%>/comments/<%=comment._id%>/edit' 
+					class='mb-2 btn btn-warning mr-2 btn-sm'>Edit Comment</a>
+					<form method='post' 
+	action='/campgrounds/<%=campground._id%>/comments/<%=comment._id%>?_method=delete'> 						<input class='mb-2 btn btn-danger btn-sm'
+							value='Delete Comment' type='submit'>
+						</form>
+						<span class="pull-right"><%= moment(comment.createdAt).fromNow()%>
+						</span>
+						<%}%>
+					</div>
+					<%})%>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<%-include('../partials/footer')%>
